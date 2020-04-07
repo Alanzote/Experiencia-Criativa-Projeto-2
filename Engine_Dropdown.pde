@@ -29,13 +29,15 @@ class Engine_Dropdown extends Engine_Button {
     // Super Draw.
     super.Draw(App);
 
-    // Update IsOpened.
-    if (IsPressedOnce)
-      IsOpened = !IsOpened;
-
     // Check for Open, draw other Buttons if we are opened.
     if (IsOpened)
       for (Engine_Button Btn : OptionButtons)
         Btn.Draw(App);
+        
+    // Update IsOpened.
+    if (IsPressedOnce)
+      IsOpened = !IsOpened;
+    else if (App.mousePressed && !IsHovered)
+      IsOpened = false;
   }
 }
