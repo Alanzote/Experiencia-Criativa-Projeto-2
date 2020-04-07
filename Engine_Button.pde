@@ -1,3 +1,5 @@
+import java.util.function.*;
+
 // A Simple button.
 class Engine_Button implements Engine_Drawable {
 
@@ -14,17 +16,27 @@ class Engine_Button implements Engine_Drawable {
 
   // If this Button is pressed.
   public boolean IsPressed;
-  
+
+  // Our Previous Button IsPressed State.
+  private boolean LastIsPressed;
+
+  // A DoOnce Is Pressed Boolean.
+  protected boolean IsPressedOnce;
+
   // If this Button is hovered.
   public boolean IsHovered;
-  
+
+  // The Callback.
+  private Consumer<Engine_Button> Callback;
+
   // Define a Constructor.
-  public Engine_Button(int X, int Y, int Width, int Height, String Text) {
+  public Engine_Button(int X, int Y, int Width, int Height, String Text, Consumer<Engine_Button> Callback) {
     this.X = X;
     this.Y = Y;
     this.Width = Width;
     this.Height = Height;
     this.Text = Text;
+    this.Callback = Callback;
   }
 
   // Draws the Button.
@@ -34,11 +46,26 @@ class Engine_Button implements Engine_Drawable {
     int RealY = (int)((Y / (float)600) * App.height);
     int RealWidth = (int)((Width / (float)800) * App.width);
     int RealHeight = (int)((Height / (float)600) * App.height);
-     
+    
+    // Remove IsPressedOnce.
+    IsPressedOnce = false;
+
     // Do State Checks.
     IsHovered = App.mouseX >= RealX && App.mouseX < RealX + RealWidth && App.mouseY >= RealY && App.mouseY < RealY + RealHeight;
     IsPressed = IsHovered && App.mousePressed && App.mouseButton == LEFT;
-   
+
+    // If we just pressed...
+    if (LastIsPressed != IsPressed && IsPressed) {
+      // Set IsPressedOnce.
+      IsPressedOnce = true;
+      
+      // Call Callback.
+      Callback.accept(this);
+    }
+
+    // Set Last is Prsset.
+    LastIsPressed = IsPressed;
+
     // Fill with Color.
     App.fill(IsPressed ? 60 : IsHovered ? 40 : 20);
 
