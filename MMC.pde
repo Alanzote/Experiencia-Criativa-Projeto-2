@@ -39,6 +39,9 @@ void OnMediaFileSelected(File Selected) {
   if (Selected == null)
     return;
 
+  if (CurrentFile != null)
+    CurrentFile.Cleanup();
+
   CurrentFile = new MediaFile_Audio(this, Selected);
 }
 

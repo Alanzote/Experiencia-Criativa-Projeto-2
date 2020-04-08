@@ -14,6 +14,9 @@ abstract class MediaFile implements Engine_Drawable {
 
   // Draws the Controls (drawing).
   protected abstract void DrawControls(PApplet App);
+  
+  // Clean up.
+  protected abstract void Cleanup();
 
   // The Draw Function.
   public void Draw(PApplet App) {

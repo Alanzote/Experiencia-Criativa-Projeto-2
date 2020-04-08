@@ -1,45 +1,54 @@
-import processing.sound.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
 
 // Loads up 
 class MediaFile_Audio extends MediaFile {
   
+  // Minim.
+  private Minim Library;
+  
   // Our Sound.
-  private SoundFile Sound;
+  private AudioPlayer Sound;
   
   // Our Analyzer.
   private FFT Analyzer;
   
-  // The Start Play Time of this Audio File.
-  private float StartTime;
-  
-  // The Number of Bands.
-  private static final int NumberOfBands = 128;
-  
   // The Band Size in X and Y.
-  private static final int BandSizeX = 5, BandSizeY = 10;
+  private static final int BandSizeX = 2, BandSizeY = 5;
   
-  // The Band Smoothing Factor.
-  private static final float BandSmoothFactor = 0.25;
+  // The Amount of Bands.
+  private static final int BandAmount = 256;
   
-  // The Bands.
-  private float[] Bands = new float[NumberOfBands];
+  // The Band Skip Ratio.
+  private static final int BandSkip = 3;
+  
+  // Our Buttons.
+  private Engine_Button[] Buttons;
   
   // Default Constructor.
   public MediaFile_Audio(PApplet App, File Media) {
     // Super.
     super(Media);
     
+    Buttons = new Engine_Button[] {
+      new Engine_Button(10, 585, 20, 10, "Pause", (Button) -> {
+        Button.Text = Sound.isPlaying() ? "Play" : "Pause";
+        
+        if (Sound.isPlaying())
+          Sound.pause();
+        else
+          Sound.play();
+      })
+    };
+    
+    // Create Minim.
+    Library = new Minim(App);
+    
     // Create Sound.
-    Sound = new SoundFile(App, Media.getAbsolutePath());
+    Sound = Library.loadFile(Media.getAbsolutePath(), 1024);
     
     // Create Analyzer.
-    Analyzer = new FFT(App, NumberOfBands);
-    
-    // Give analyzer an input.
-    Analyzer.input(Sound);
-    
-    // Set Start Time.
-    StartTime = App.millis() / 1000;
+    Analyzer = new FFT(Sound.bufferSize(), Sound.sampleRate());
     
     // Play the Sound.
     Sound.play();
@@ -48,16 +57,15 @@ class MediaFile_Audio extends MediaFile {
   // Called to Update the Display.
   protected void DrawDisplay(PApplet App) {
     // Analyze.
-    Analyzer.analyze();
+    Analyzer.forward(Sound.mix);
+    
+    // Calculate Real Sizes.
+    int RealSizeX = (int)Math.max(2, ((float)BandSizeX/(float)800 * App.width));
+    int RealSizeY = (int)((float)BandSizeY/(float)600 * App.height);
     
     // Loop all bands...
-    for (int i = 0; i < NumberOfBands; i++) {
-      // Smooth Band Data.
-      Bands[i] += (Analyzer.spectrum[i] - Bands[i]) * BandSmoothFactor;
-      
-      // Draw the Band.
-      App.rect(App.width / 2 - NumberOfBands/2 * BandSizeX + BandSizeX * i, App.height / 2 + BandSizeY * 0.5, BandSizeX, -Bands[i]*BandSizeY*50);
-    }
+    for (int i = 0; i < BandAmount; i++)
+      App.rect(App.width / 2 - BandAmount/2 * RealSizeX + RealSizeX * i, App.height / 2 + RealSizeY * 0.5, RealSizeX, -Analyzer.getBand(i + BandSkip)*RealSizeY);
   }
   
   // Called to Update the Controls.
@@ -72,12 +80,28 @@ class MediaFile_Audio extends MediaFile {
     App.fill(255);
     
     // Draw Timeline.
-    App.rect(10, App.height * 0.9 + App.height * 0.05, App.width - 20, 5);
+    App.rect(((float)10 / (float)800) * App.width, App.height * 0.9 + App.height * 0.05, App.width - ((float)20 / (float)600) * App.width, ((float)5 / (float)600) * App.height);
     
     // Set the Fill Color to Grey.
     App.fill(40);
   
     // Draw the Timeline Position.
-    App.rect(10 + ((App.millis()/(float)1000 - StartTime)/(float)Sound.duration()) * (float)(App.width - 20), App.height * 0.9 + App.height * 0.046, 15, 15);
+    App.rect(((float)10 / (float)800) * App.width + ((float)Sound.position()/(float)Sound.length()) * (float)(App.width - ((float)20 / (float)800) * App.width), App.height * 0.9 + App.height * 0.05 - ((float)15 / (float)600) * App.height * 0.3, ((float)15 / (float)800) * App.width, ((float)15 / (float)600) * App.height);
+    
+    // Draw all Buttons.
+    for (Engine_Button Btn : Buttons)
+      Btn.Draw(App);
+  }
+  
+  // Clean up.
+  protected void Cleanup() {
+    // Pause the Sound.
+    Sound.pause();
+    
+    // Close it.
+    Sound.close();
+    
+    // Stop Minim.
+    Library.stop();
   }
 }
