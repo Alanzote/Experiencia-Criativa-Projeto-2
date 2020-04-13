@@ -1,7 +1,7 @@
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 
-// Loads up 
+// Loads up and plays audio files.
 class MediaFile_Audio extends MediaFile {
   
   // Minim.
@@ -91,6 +91,11 @@ class MediaFile_Audio extends MediaFile {
     // Draw all Buttons.
     for (Engine_Button Btn : Buttons)
       Btn.Draw(App);
+  }
+  
+  // Processes a Mouse event.
+  protected void ProcessMouseEvent(MouseEvent Event) {
+  
   }
   
   // Clean up.
