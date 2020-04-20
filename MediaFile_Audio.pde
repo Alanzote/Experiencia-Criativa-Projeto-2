@@ -30,6 +30,7 @@ class MediaFile_Audio extends MediaFile {
     // Super.
     super(Media);
     
+    // Create Buttons.
     Buttons = new Engine_Button[] {
       new Engine_Button(10, 585, 20, 10, "Pause", (Button) -> {
         Button.Text = Sound.isPlaying() ? "Play" : "Pause";
@@ -86,7 +87,7 @@ class MediaFile_Audio extends MediaFile {
     App.fill(40);
   
     // Draw the Timeline Position.
-    App.rect(((float)10 / (float)800) * App.width + ((float)Sound.position()/(float)Sound.length()) * (float)(App.width - ((float)20 / (float)800) * App.width), App.height * 0.9 + App.height * 0.05 - ((float)15 / (float)600) * App.height * 0.3, ((float)15 / (float)800) * App.width, ((float)15 / (float)600) * App.height);
+    App.rect(((float)10 / (float)800) * App.width + ((float)Sound.position()/(float)Sound.length()) * (float)(App.width - ((float)30 / (float)800) * App.width), App.height * 0.9 + App.height * 0.05 - ((float)15 / (float)600) * App.height * 0.3, ((float)15 / (float)800) * App.width, ((float)15 / (float)600) * App.height);
     
     // Draw all Buttons.
     for (Engine_Button Btn : Buttons)

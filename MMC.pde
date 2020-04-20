@@ -1,4 +1,6 @@
 import processing.core.PApplet;
+import processing.video.*;
+import java.nio.file.*;
 
 // The Toolbar.
 Engine_Toolbar Toolbar;
@@ -27,9 +29,6 @@ void setup() {
 
       // Select Input.
       selectInput("Select a Media File:", "OnMediaFileSelected");
-  }), new Engine_ToolbarElement("Help", (Button) -> {
-      // Print Help.
-      println("Help Pressed");
   }));
 }
 
@@ -47,15 +46,23 @@ void OnMediaFileSelected(File Selected) {
   if (Selected.getAbsolutePath().lastIndexOf(".") == -1 || Selected.getAbsolutePath().lastIndexOf(".") == 0)
     return;
   
-  // Get the Extension.
-  String Extension = Selected.getAbsolutePath().substring(Selected.getAbsolutePath().lastIndexOf(".")+1);
-  
-  // Load Correct Media File Type.
-  if (Extension.equals("mp3") || Extension.equals("MP3") || Extension.equals("wav") || Extension.equals("WAV"))
-    CurrentFile = new MediaFile_Audio(this, Selected);
-  else if (Extension.equals("jpg") || Extension.equals("JPG") || Extension.equals("png") || Extension.equals("PNG"))
-    CurrentFile = new MediaFile_Image(this, Selected);
-  else if (Extension.equals("mov") || Extension.equals("MOV")) { }
+  // Try...
+  try {
+    // Get Content Type.
+    String ContentType = Files.probeContentType(Paths.get(Selected.getAbsolutePath()));
+    
+    // Audio Image and Video load.
+    if (ContentType.contains("audio"))
+      CurrentFile = new MediaFile_Audio(this, Selected);
+    else if (ContentType.contains("image"))
+      CurrentFile = new MediaFile_Image(this, Selected);
+    else if (ContentType.contains("video"))
+      CurrentFile = new MediaFile_Movie(this, Selected);
+  } catch (Exception ex) {
+    // Notify.
+    println("-- ERROR WHILE LOADING FILE --");
+    println(ex.getMessage());
+  }
 }
 
 // Processes Mouse Event.
@@ -71,6 +78,9 @@ void mouseReleased(MouseEvent Event) { mouseEvent(Event); }
 void mouseMoved(MouseEvent Event) { mouseEvent(Event); }
 void mouseDragged(MouseEvent Event) { mouseEvent(Event); }
 void mouseWheel(MouseEvent Event) { mouseEvent(Event); }
+
+// Define Movie Event.
+void movieEvent(Movie m) { m.read(); }
 
 // The Draw function, draws our application.
 void draw() {
