@@ -86,7 +86,8 @@ void movieEvent(Movie m) { m.read(); }
 void draw() {
   // Reset the Screen, drawing the background.
   background(0);
-
+  
+  // Draw Current File, if it exists.  
   if (CurrentFile != null)
     CurrentFile.Draw(this);
 
