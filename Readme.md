@@ -1,6 +1,8 @@
 # Experiência Criativa - Projeto II
 Este projeto foi feito para a Pontifícia Universidade Católica do Paraná (PUCPR) como o segundo projeto da matéria Experiência Criativa, do primeiro período. Neste projeto foi utilizado o IDE Processing e a linguágem Java para construir uma central multimídia simples.
 
+Autor: Alan Renato Bunese (Alanzote)
+
 # Versão do Processing
 Certifique-se que você está rodando pelo menos o Processing 4.0a1.
 
