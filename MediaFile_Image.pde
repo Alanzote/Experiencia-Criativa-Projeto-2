@@ -33,12 +33,6 @@ class MediaFile_Image extends MediaFile {
 
   // Overrides Draw Controls.
   protected void DrawControls(PApplet App) {
-    // Set the Fill color to Grey.
-    App.fill(10);
-
-    // Draw Background.
-    App.rect(0, App.height * 0.9, App.width, App.height * 0.1);
-
     // Set if we are dragging the image.
     IsDragging = App.mousePressed && App.mouseButton == LEFT && App.mouseX >= App.width / 2 - Image.width / 2 + ImageOffsetX && App.mouseX <= App.width / 2 + Image.width / 2 + ImageOffsetX && App.mouseY >= App.height / 2 - Image.height /2 + ImageOffsetY && App.mouseY <= App.height / 2 + Image.height / 2 + ImageOffsetY;
 

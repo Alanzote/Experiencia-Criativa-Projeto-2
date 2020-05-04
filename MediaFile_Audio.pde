@@ -39,6 +39,17 @@ class MediaFile_Audio extends MediaFile {
           Sound.pause();
         else
           Sound.play();
+      }),
+      new Engine_Button(35, 585, 20, 10, "Rewind", (Button) -> {
+        Sound.rewind();
+      }),
+      new Engine_Button(60, 585, 20, 10, "Loop", (Button) -> {
+        Button.Text = Sound.isLooping() ? "Loop" : "Stop Loop";
+        
+        if (Sound.isLooping())
+          Sound.loop(1);
+        else
+          Sound.loop();
       })
     };
     

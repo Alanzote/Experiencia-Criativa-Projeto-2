@@ -7,6 +7,9 @@ class MediaFile_Movie extends MediaFile {
   // Our Buttons.
   private Engine_Button[] Buttons;
   
+  // If the video is currently looping.
+  private Boolean IsLooping = false;
+  
   // Default Constructor.
   public MediaFile_Movie(PApplet App, File Media) {
     // Super.
@@ -21,6 +24,20 @@ class MediaFile_Movie extends MediaFile {
           Video.pause();
         else
           Video.play();
+      }),
+      new Engine_Button(35, 585, 20, 10, "Rewind", (Button) -> {
+        Video.jump(0);
+      }),
+      new Engine_Button(60, 585, 20, 10, "Loop", (Button) -> {
+        Button.Text = IsLooping ? "Loop" : "Stop Loop";
+        
+        if (IsLooping) {
+          Video.noLoop();
+        } else {
+          Video.loop();
+        }
+        
+        IsLooping = !IsLooping;
       })
     };
     
